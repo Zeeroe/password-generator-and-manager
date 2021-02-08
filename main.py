@@ -1,42 +1,57 @@
 import random
 import string
 from random_word import RandomWords
-r = RandomWords()
+rw = RandomWords()
 
 lowers = string.ascii_lowercase
 uppers = string.ascii_uppercase
 numbers = string.digits
 symbols = string.punctuation
 
-characters = str()
-length = int()
+characters = lowers+uppers+numbers
+length = 16
+separator = '-'
+limit = 3
+minlength = 4
+maxlength = 12
+casing = '.title()'
 
 
-def password_inputs():
-    global characters
-    global length
+class Settings:
+    def __init__(self):
+        self.characters = characters
+        self.length = length
+        
+        self.separator = separator
+        self.limit = limit
+        self.minlength = minlength
+        self.maxlength = maxlength
+        self.casing = casing
 
-    length = int(input('password length: '))
-    char_input = input('select options: ')
 
-    if 'l' in char_input:
-        characters += lowers
-    if 'u' in char_input:
-        characters += uppers
-    if 'n' in char_input:
-        characters += numbers
-    if 's' in char_input:
-        characters += symbols
+DS = Settings()  # Default Settings
 
 
 def create_password():
-    password = ''.join(random.choice(characters) for i in range(length))
-    return password
+    try:
+        password = ''.join(random.choice(DS.characters) for _ in range(DS.length))
+        return password
+    except Exception:
+        pass
 
 
 def create_passphrase():
-    passphrase = r.get_random_word()
-    return passphrase
+    try:
+        passphrase = DS.separator.join(rw.get_random_words(limit=DS.limit, minLength=DS.minlength, maxLength=DS.maxlength))
+
+        if DS.casing == 'title':
+            passphrase = passphrase.title()
+
+        return passphrase
+
+    except Exception:
+        pass
 
 
+print(create_password())
 print(create_passphrase())
