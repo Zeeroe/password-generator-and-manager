@@ -1,0 +1,8 @@
+from tkinter import *
+import random, string
+
+
+root=Tk()
+root.geometry("500x300")
+root.resizable(0,0)
+root.title("PASSWORD GENERATOR")
