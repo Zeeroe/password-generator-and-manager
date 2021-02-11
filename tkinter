@@ -6,3 +6,6 @@ root=Tk()
 root.geometry("500x300")
 root.resizable(0,0)
 root.title("PASSWORD GENERATOR")
+
+my_text =Text(root, width=60, height=20)
+my_text.pack(pady=20)
