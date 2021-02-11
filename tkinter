@@ -7,12 +7,13 @@ root.geometry("500x300")
 root.resizable(0,0)
 root.title("PASSWORD GENERATOR")
 
-my_text =Text(root, width=60, height=20)
-my_text.pack(pady=20)
+my_text = Text(root, width=60, height=15)
+my_text.pack(pady=5)
 
 button_frame = Frame(root)
-button_Frame.pack()
+button_frame.pack()
 
 enter_button = Button(button_frame, text='Enter Password')
 enter_button.grid(row=5, column=5)
+
 root.mainloop()
