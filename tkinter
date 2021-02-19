@@ -17,3 +17,37 @@ enter_button = Button(button_frame, text='Enter Password')
 enter_button.grid(row=5, column=5)
 
 root.mainloop()
+
+#test for functions
+from tkinter import *
+
+#Create window
+window = Tk()
+window.title("1Pass")
+window.geometry('350x200')
+
+#Label
+lbl = Label(window, text="Your generated password section")
+
+lbl.grid(column=0, row=0)
+#Textbox
+txt = Entry(window,width=10)
+txt.grid(column=1, row=0)
+txt.focus()
+
+#Combo box
+#from tkinter.ttk import *
+#combo = Combobox(window)
+#combo['values']= ("Subjects","Harry potter")
+#combo.current(1)
+#combo.grid(column=2, row=0)
+
+def clicked():
+    res = "Your password is: " + txt.get()
+    lbl.configure(text= res)
+    
+btn = Button(window, text="Generate", bg="orange", fg="red", command=clicked)
+btn.grid(column=2, row=1)
+
+
+window.mainloop()
