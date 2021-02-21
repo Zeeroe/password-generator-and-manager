@@ -24,11 +24,3 @@ class Settings:
         self.minlength = minlength
         self.maxlength = maxlength
         self.casing = casing
-
-    def setcharacters(self):
-        # self.characters = my_text.text
-        pass
-
-    def setlength(self):
-        # self.length = length_textbox.Text
-        pass
