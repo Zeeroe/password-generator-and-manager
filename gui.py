@@ -1,65 +1,57 @@
 from tkinter import *
-import random, string
+from settings import Settings
+import random, string, random_word
 
+S = Settings()
+rw = random_word.RandomWords()
 
-root=Tk()
-root.geometry("500x300")
-root.resizable(0,0)
-root.title("PASSWORD GENERATOR")
-
-my_text = Text(root, width=60, height=15)
-my_text.pack(pady=5)
-
-button_frame = Frame(root)
-button_frame.pack()
-
-enter_button = Button(button_frame, text='Enter Password')
-enter_button.grid(row=5, column=5)
-
-root.mainloop()
-
-#test for functions
-from tkinter import *
-
-#Create window
+# Window
 window = Tk()
 window.title("1Pass")
-window.geometry('350x200')
+window.geometry('400x200')
 
-###GENERATION OF PASSWORD/PASSPHRASE
+# Text
+entry_pw = Entry(window, width=32)
+entry_pw.grid(column=1, row=0)
+entry_pw.focus()
+
+entry_pp = Entry(window, width=32)
+entry_pp.grid(column=1, row=1)
+entry_pp.focus()
+
+# Label
+lbl_pw = Label(window, width=12, text="Password:")
+lbl_pw.grid(column=0, row=0)
+
+lbl_pp = Label(window, width=12, text="Passphrase:")
+lbl_pp.grid(column=0, row=1)
+
+
 def generate_password():
-    res = "Your password is: " + txt_password.get()
-    lbl_password.configure(text= res)
+    password = ''.join(random.choice(S.characters) for _ in range(S.length))
+    entry_pw.delete(0, len(entry_pw.get()))
+    entry_pw.insert(1, password)
+
 
 def generate_passphrase():
-    res = "Your password is: " + txt_passphrase.get()
-    lbl_passphrase.configure(text= res)
+    try:
+        passphrase = S.separator.join(rw.get_random_words(limit=S.limit,
+                                                          minLength=S.minlength,
+                                                          maxLength=S.maxlength,
+                                                          hasDictionaryDef='True'))
+
+        passphrase = passphrase.lower()
+        entry_pp.delete(0, len(entry_pp.get()))
+        entry_pp.insert(1, passphrase)
+
+    except TypeError:
+        print('TypeError')
+        generate_passphrase()
 
 
-##PASSWORD
-#Label for password
-lbl_password = Label(window, text="Your generated password section")
-lbl_password.grid(column=0, row=0)
-#Textbox for password
-txt_password = Entry(window,width=10)
-txt_password.grid(column=1, row=0)
-txt_password.focus()
-#Button for password
-btn_password = Button(window, text="Generate your password", command=generate_password)
-btn_password.grid(column=2, row=0)
-
-
-##PASSPHRASE
-#Label for passphrase
-lbl_passphrase = Label(window, text="Your generated password section")
-lbl_passphrase.grid(column=0, row=1)
-#Textbox for passphrase
-txt_passphrase = Entry(window,width=10)
-txt_passphrase.grid(column=1, row=1)
-#Button for passphrase
-btn = Button(window, text="Generate your passphrase", command=generate_passphrase)
-btn.grid(column=2, row=1)
-
-
+btn = Button(window, text="Generate Password", command=generate_password)
+btn.grid(column=2, row=0)
+btn2 = Button(window, text="Generate Passphrase", command=generate_passphrase)
+btn2.grid(column=2, row=1)
 
 window.mainloop()
