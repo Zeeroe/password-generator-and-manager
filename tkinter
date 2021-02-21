@@ -26,28 +26,40 @@ window = Tk()
 window.title("1Pass")
 window.geometry('350x200')
 
-#Label
-lbl = Label(window, text="Your generated password section")
+###GENERATION OF PASSWORD/PASSPHRASE
+def generate_password():
+    res = "Your password is: " + txt_password.get()
+    lbl_password.configure(text= res)
 
-lbl.grid(column=0, row=0)
-#Textbox
-txt = Entry(window,width=10)
-txt.grid(column=1, row=0)
-txt.focus()
+def generate_passphrase():
+    res = "Your password is: " + txt_passphrase.get()
+    lbl_passphrase.configure(text= res)
 
-#Combo box
-#from tkinter.ttk import *
-#combo = Combobox(window)
-#combo['values']= ("Subjects","Harry potter")
-#combo.current(1)
-#combo.grid(column=2, row=0)
 
-def clicked():
-    res = "Your password is: " + txt.get()
-    lbl.configure(text= res)
-    
-btn = Button(window, text="Generate", bg="orange", fg="red", command=clicked)
+##PASSWORD
+#Label for password
+lbl_password = Label(window, text="Your generated password section")
+lbl_password.grid(column=0, row=0)
+#Textbox for password
+txt_password = Entry(window,width=10)
+txt_password.grid(column=1, row=0)
+txt_password.focus()
+#Button for password
+btn_password = Button(window, text="Generate your password", command=generate_password)
+btn_password.grid(column=2, row=0)
+
+
+##PASSPHRASE
+#Label for passphrase
+lbl_passphrase = Label(window, text="Your generated password section")
+lbl_passphrase.grid(column=0, row=1)
+#Textbox for passphrase
+txt_passphrase = Entry(window,width=10)
+txt_passphrase.grid(column=1, row=1)
+#Button for passphrase
+btn = Button(window, text="Generate your passphrase", command=generate_passphrase)
 btn.grid(column=2, row=1)
+
 
 
 window.mainloop()
