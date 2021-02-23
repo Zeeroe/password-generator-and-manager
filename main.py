@@ -49,60 +49,28 @@ pw_frame = tk.Frame(root)
 pw_frame.grid(column=0, row=4)
 
 
-def low_f():
-    if low_var.get() == 0:
-        S.characters = re.sub('[a-z]', '', S.characters)
-    elif low_var.get() == 1:
-        S.characters += 'abcdefghijklmnopqrstuvwxyz'
+class Checkbox:
+    def __init__(self, lt, g, sub, add):
+        self.lt = lt
+        self.g = g
+        self.sub = sub
+        self.add = add
+
+        self.label = tk.Label(pw_frame, text=self.lt).grid(column=0, row=g)
+        self.var = tk.IntVar(pw_frame)
+        self.check = tk.Checkbutton(pw_frame, variable=self.var, command=self.func).grid(column=1, row=g)
+
+    def func(self):
+        if self.var.get() == 0:
+            S.characters = re.sub(self.sub, '', S.characters)
+        elif self.var.get() == 1:
+            S.characters += self.add
 
 
-low_label = tk.Label(pw_frame, text='a-z')
-low_label.grid(column=0, row=0)
-low_var = tk.IntVar(pw_frame)
-low_check = tk.Checkbutton(pw_frame, variable=low_var, command=low_f)
-low_check.grid(column=1, row=0)
-
-
-def up_f():
-    if up_var.get() == 0:
-        S.characters = re.sub('[A-Z]', '', S.characters)
-    elif up_var.get() == 1:
-        S.characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-
-up_label = tk.Label(pw_frame, text='A-Z')
-up_label.grid(column=0, row=1)
-up_var = tk.IntVar(pw_frame)
-up_check = tk.Checkbutton(pw_frame, variable=up_var, command=up_f)
-up_check.grid(column=1, row=1)
-
-
-def num_f():
-    if num_var.get() == 0:
-        S.characters = re.sub('[0-9]', '', S.characters)
-    elif num_var.get() == 1:
-        S.characters += '0123456789'
-
-
-num_label = tk.Label(pw_frame, text='0-9')
-num_label.grid(column=0, row=2)
-num_var = tk.IntVar(pw_frame)
-num_check = tk.Checkbutton(pw_frame, variable=num_var, command=num_f)
-num_check.grid(column=1, row=2)
-
-
-def sym_f():
-    if sym_var.get() == 0:
-        S.characters = re.sub('[!@#$%^&*]', '', S.characters)
-    elif sym_var.get() == 1:
-        S.characters += '!@#$%^&*'
-
-
-sym_label = tk.Label(pw_frame, text='!@#$%^&*')
-sym_label.grid(column=0, row=3)
-sym_var = tk.IntVar(pw_frame)
-sym_check = tk.Checkbutton(pw_frame, variable=sym_var, command=sym_f)
-sym_check.grid(column=1, row=3)
+low = Checkbox('a-z', 0, '[a-z]', 'abcdefghijklmnopqrstuvwxyz')
+up = Checkbox('A-Z', 1, '[A-Z]', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+num = Checkbox('0-9', 2, '[0-9]', '0123456789')
+sym = Checkbox('!@#$%^&*', 3, '[!@#$%^&*]', '!@#$%^&*')
 
 # Passphrase Frame
 pp_frame = tk.Frame(root)
