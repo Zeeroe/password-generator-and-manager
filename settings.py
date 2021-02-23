@@ -7,8 +7,8 @@ symbols = '!@#$%^&*'
 characters = ''
 length = 16
 
-separator = '-'
 words = 3
+sep = '-'
 minlength = 4
 maxlength = 9
 casing = 'title'
@@ -24,8 +24,8 @@ class Settings:
         self.length = length
 
         # Passphrase
-        self.separator = separator
         self.words = words
+        self.sep = sep
         self.minlength = minlength
         self.maxlength = maxlength
         self.casing = casing
