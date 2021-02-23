@@ -1,26 +1,32 @@
-import string
+lowers = 'abcdefghijklmnopqrstuvwxyz'
+uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+numbers = '0123456789'
+symbols = '!@#$%^&*'
 
-lowers = string.ascii_lowercase
-uppers = string.ascii_uppercase
-numbers = string.digits
-symbols = string.punctuation
 
-characters = lowers+uppers+numbers
+characters = ''
 length = 16
+
 separator = '-'
-limit = 3
+words = 3
 minlength = 4
-maxlength = 12
+maxlength = 9
 casing = 'title'
+number = True
 
 
 class Settings:
+    """ Class for storing generation settings """
+
     def __init__(self):
+        # Password
         self.characters = characters
         self.length = length
 
+        # Passphrase
         self.separator = separator
-        self.limit = limit
+        self.words = words
         self.minlength = minlength
         self.maxlength = maxlength
         self.casing = casing
+        self.number = number
