@@ -17,10 +17,12 @@ def gen_word():
 
 def gen_phrase():
     try:
-        passphrase = S.separator.join(rw.get_random_words(limit=S.words,
-                                                          minLength=S.minlength,
-                                                          maxLength=S.maxlength,
-                                                          hasDictionaryDef='True'))
+        sep = S.sep
+        passphrase = sep.join(rw.get_random_words(
+            limit=S.words,
+            minLength=S.minlength,
+            maxLength=S.maxlength,
+            hasDictionaryDef='True'))
 
         passphrase = passphrase.title()
         pw_entry.delete(0, len(pw_entry.get()))
@@ -49,16 +51,29 @@ pw_frame = tk.Frame(root)
 pw_frame.grid(column=0, row=4)
 
 
+def length_f(length):
+    S.length = int(length)
+
+
+length_label = tk.Label(pw_frame, text='Length')
+length_label.grid(column=0, row=0)
+length_scale = tk.Scale(pw_frame, from_=4, to=32, orient=tk.HORIZONTAL, command=length_f)
+length_scale.set(16)
+length_scale.grid(column=1, row=0)
+
+
 class Checkbox:
     def __init__(self, lt, g, sub, add):
-        self.lt = lt
-        self.g = g
-        self.sub = sub
-        self.add = add
+        self.lt = lt    # Label Text
+        self.g = g      # Grid Row
+        self.sub = sub  # Characters to remove (Regex)
+        self.add = add  # Characters to add
 
         self.label = tk.Label(pw_frame, text=self.lt).grid(column=0, row=g)
         self.var = tk.IntVar(pw_frame)
-        self.check = tk.Checkbutton(pw_frame, variable=self.var, command=self.func).grid(column=1, row=g)
+        self.check = tk.Checkbutton(pw_frame, variable=self.var, command=self.func)
+        self.check.grid(column=1, row=g)
+        self.check.invoke()
 
     def func(self):
         if self.var.get() == 0:
@@ -67,10 +82,10 @@ class Checkbox:
             S.characters += self.add
 
 
-low = Checkbox('a-z', 0, '[a-z]', 'abcdefghijklmnopqrstuvwxyz')
-up = Checkbox('A-Z', 1, '[A-Z]', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-num = Checkbox('0-9', 2, '[0-9]', '0123456789')
-sym = Checkbox('!@#$%^&*', 3, '[!@#$%^&*]', '!@#$%^&*')
+low = Checkbox('a-z', 1, '[a-z]', 'abcdefghijklmnopqrstuvwxyz')
+up = Checkbox('A-Z', 2, '[A-Z]', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+num = Checkbox('0-9', 3, '[0-9]', '0123456789')
+sym = Checkbox('!@#$%^&*', 4, '[!@#$%^&*]', '!@#$%^&*')
 
 # Passphrase Frame
 pp_frame = tk.Frame(root)
@@ -83,7 +98,7 @@ def switch_mode(v):
 
 
 mode_list = ['Password', 'Passphrase']
-mode_str = tk.StringVar(root)
+mode_str = tk.StringVar(root, value='Password')
 mode_drop = tk.OptionMenu(root, mode_str, *mode_list, command=switch_mode)
 mode_drop.grid(column=0, row=3)
 
