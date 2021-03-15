@@ -1,6 +1,8 @@
 import tkinter as tk
 from settings import Settings
-import random, random_word, re
+import random
+import random_word
+import re
 
 S = Settings()
 rw = random_word.RandomWords()
@@ -18,13 +20,20 @@ def gen_word():
 def gen_phrase():
     try:
         sep = S.sep
-        passphrase = sep.join(rw.get_random_words(
+        g = rw.get_random_words(
             limit=S.words,
             minLength=S.minlength,
-            maxLength=S.maxlength,
-            hasDictionaryDef='True'))
+            maxLength=S.maxlength)
+        # g.insert(random.randrange(1, len(g)), random.randint(1, 9))
+        passphrase = sep.join(g)
 
-        passphrase = passphrase.title()
+        if S.casing == 'lower':
+            passphrase = passphrase.lower()
+        elif S.casing == 'upper':
+            passphrase = passphrase.upper()
+        elif S.casing == 'title':
+            passphrase = passphrase.title()
+
         text_entry.delete(0, len(text_entry.get()))
         text_entry.insert(0, passphrase)
 
@@ -134,6 +143,68 @@ sep_var = tk.StringVar(value=S.sep)
 sep_entry = tk.Entry(pp_frame, width=2, validate="key", validatecommand=(reg, '%P'))
 sep_entry.grid(column=1, row=1)
 sep_entry.insert(0, S.sep)
+
+
+def minlength_f():
+    if int(minlength_var.get()) > S.maxlength:  # When minlength is greater than maxlength
+        S.minlength = S.maxlength
+    else:
+        S.minlength = int(minlength_var.get())
+    minlength_spinbox.config(to=S.maxlength)
+
+
+minlength_label = tk.Label(pp_frame, text='Min Length')
+minlength_label.grid(column=0, row=2)
+minlength_var = tk.IntVar(value=S.minlength)
+minlength_spinbox = tk.Spinbox(pp_frame, from_=1, to=16, width=2, state='readonly', textvariable=minlength_var, command=minlength_f)
+minlength_spinbox.grid(column=1, row=2)
+
+
+def maxlength_f():
+    if int(maxlength_var.get()) < S.minlength:  # When maxlength is less than minlength
+        S.maxlength = S.minlength
+    else:
+        S.maxlength = int(maxlength_var.get())
+    maxlength_spinbox.config(from_=S.minlength)
+
+
+maxlength_label = tk.Label(pp_frame, text='Max Length')
+maxlength_label.grid(column=0, row=3)
+maxlength_var = tk.IntVar(value=S.maxlength)
+maxlength_spinbox = tk.Spinbox(pp_frame, from_=1, to=16, width=2, state='readonly', textvariable=maxlength_var, command=maxlength_f)
+maxlength_spinbox.grid(column=1, row=3)
+
+
+def casing_f(c):
+    if c == 'Lowercase':
+        S.casing = 'lower'
+    elif c == 'Uppercase':
+        S.casing = 'upper'
+    elif c == 'Titlecase':
+        S.casing = 'title'
+    print(S.casing)
+
+
+casing_label = tk.Label(pp_frame, text='Casing')
+casing_label.grid(column=0, row=4)
+casing_list = ['Lowercase', 'Uppercase', 'Titlecase']
+casing_str = tk.StringVar(value='Lowercase')
+casing_drop = tk.OptionMenu(pp_frame, casing_str, *casing_list, command=casing_f)
+casing_drop.grid(column=1, row=4)
+
+
+def number_f():
+    if number_var.get() == 0:
+        S.number = False
+    elif number_var.get() == 1:
+        S.number = True
+
+
+number_label = tk.Label(pp_frame, text='Number').grid(column=0, row=5)
+number_var = tk.IntVar(pp_frame)
+number_check = tk.Checkbutton(pp_frame, variable=number_var, command=number_f)
+number_check.grid(column=1, row=5)
+number_check.invoke()
 
 
 # Generate Button
