@@ -20,12 +20,17 @@ def gen_word():
 def gen_phrase():
     try:
         sep = S.sep
-        g = rw.get_random_words(
+        list_ = rw.get_random_words(
             limit=S.words,
             minLength=S.minlength,
             maxLength=S.maxlength)
-        # g.insert(random.randrange(1, len(g)), random.randint(1, 9))
-        passphrase = sep.join(g)
+
+        if S.number:
+            index_ = random.randint(0, len(list_)-1)
+            number_ = str(random.randint(0, 9))
+            list_[index_] += number_
+
+        passphrase = sep.join(list_)
 
         if S.casing == 'lower':
             passphrase = passphrase.lower()
