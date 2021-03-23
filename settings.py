@@ -3,15 +3,14 @@ uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 numbers = '0123456789'
 symbols = '!@#$%^&*'
 
-
 characters = ''
 length = 16
 
 words = 3
 sep = '-'
 minlength = 4
-maxlength = 9
-casing = 'title'
+maxlength = 6
+casing = 'lower'
 number = True
 
 
@@ -30,3 +29,6 @@ class Settings:
         self.maxlength = maxlength
         self.casing = casing
         self.number = number
+
+
+S = Settings()
