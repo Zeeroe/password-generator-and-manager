@@ -37,14 +37,6 @@ class pwPanel:
         self.length_scale.set(self.S.length)
         self.length_scale.grid(column=1, row=0)
 
-        self.low = None
-        self.up = None
-        self.num = None
-        self.sym = None
-
-        self.make_checkboxes()
-
-    def make_checkboxes(self):
         self.low = Checkbox(self.S, self.frame, 1, '[a-z]', 'abcdefghijklmnopqrstuvwxyz')
         self.up = Checkbox(self.S, self.frame, 2, '[A-Z]', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
         self.num = Checkbox(self.S, self.frame, 3, '[0-9]', '0123456789')
