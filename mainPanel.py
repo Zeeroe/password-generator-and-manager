@@ -2,10 +2,6 @@ import tkinter as tk
 from pwPanel import *
 from ppPanel import *
 from settings import S
-import random_word
-import random
-
-rw = random_word.RandomWords()
 
 
 class mainPanel:
@@ -38,51 +34,14 @@ class mainPanel:
         if mode == 'Passphrase':
             self.pwFrame.grid_forget()
             self.ppFrame.grid(column=0, row=4)
-            self.gen_phrase()
+            self.ppPanel.gen_phrase(self.text_entry)
         elif mode == 'Password':
             self.ppFrame.grid_forget()
             self.pwFrame.grid(column=0, row=4)
-            self.gen_word()
+            self.pwPanel.gen_word(self.text_entry)
 
     def generate(self):
         if self.mode_str.get() == 'Password':
-            self.gen_word()
+            self.pwPanel.gen_word(self.text_entry)
         elif self.mode_str.get() == 'Passphrase':
-            self.gen_phrase()
-
-    def gen_word(self):
-        try:
-            password = ''.join(random.choice(S.characters) for _ in range(S.length))
-        except IndexError:
-            password = ''
-        self.text_entry.delete(0, len(self.text_entry.get()))
-        self.text_entry.insert(1, password)
-
-    def gen_phrase(self):
-        try:
-            sep = S.sep
-            list_ = rw.get_random_words(
-                limit=S.words,
-                minLength=S.minlength,
-                maxLength=S.maxlength)
-
-            if S.number:
-                index_ = random.randint(0, len(list_) - 1)
-                number_ = str(random.randint(0, 9))
-                list_[index_] += number_
-
-            passphrase = sep.join(list_)
-
-            if S.casing == 'lower':
-                passphrase = passphrase.lower()
-            elif S.casing == 'upper':
-                passphrase = passphrase.upper()
-            elif S.casing == 'title':
-                passphrase = passphrase.title()
-
-            self.text_entry.delete(0, len(self.text_entry.get()))
-            self.text_entry.insert(0, passphrase)
-
-        except TypeError:
-            print('TypeError')
-            self.gen_phrase()
+            self.ppPanel.gen_phrase(self.text_entry)
