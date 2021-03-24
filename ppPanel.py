@@ -1,4 +1,8 @@
 import tkinter as tk
+import random_word
+import random
+
+rw = random_word.RandomWords()
 
 
 class ppPanel:
@@ -51,6 +55,35 @@ class ppPanel:
         self.number_check = tk.Checkbutton(self.frame, variable=self.number_var, command=self.number_f)
         self.number_check.grid(column=1, row=5)
         self.number_check.invoke()
+
+    def gen_phrase(self, te):
+        try:
+            sep = self.S.sep
+            list_ = rw.get_random_words(
+                limit=self.S.words,
+                minLength=self.S.minlength,
+                maxLength=self.S.maxlength)
+
+            if self.S.number:
+                index_ = random.randint(0, len(list_) - 1)
+                number_ = str(random.randint(0, 9))
+                list_[index_] += number_
+
+            passphrase = sep.join(list_)
+
+            if self.S.casing == 'lower':
+                passphrase = passphrase.lower()
+            elif self.S.casing == 'upper':
+                passphrase = passphrase.upper()
+            elif self.S.casing == 'title':
+                passphrase = passphrase.title()
+
+            te.delete(0, len(te.get()))
+            te.insert(0, passphrase)
+
+        except TypeError:
+            print('TypeError')
+            self.gen_phrase(te)
 
     def maxlength_f(self):
         if int(self.maxlength_var.get()) < self.S.minlength:  # When maxlength is less than minlength
