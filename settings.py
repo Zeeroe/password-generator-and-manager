@@ -1,9 +1,9 @@
-lowers = 'abcdefghijklmnopqrstuvwxyz'
-uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-numbers = '0123456789'
-symbols = '!@#$%^&*'
-
-characters = ''
+characters = {
+    'a': 'abcdefghijklmnopqrstuvwxyz',
+    'A': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    '1': '0123456789',
+    '!': '!@#$%^&*'
+}
 length = 16
 
 words = 3
