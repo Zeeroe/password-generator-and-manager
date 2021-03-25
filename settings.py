@@ -1,17 +1,16 @@
-lowers = 'abcdefghijklmnopqrstuvwxyz'
-uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-numbers = '0123456789'
-symbols = '!@#$%^&*'
-
-
-characters = ''
+characters = {
+    'a': 'abcdefghijklmnopqrstuvwxyz',
+    'A': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    '1': '0123456789',
+    '!': '!@#$%^&*'
+}
 length = 16
 
 words = 3
-sep = '-'
 minlength = 4
-maxlength = 9
-casing = 'title'
+maxlength = 12
+sep = '-'
+casing = 'title'  # lower, upper, title
 number = True
 
 
@@ -25,8 +24,11 @@ class Settings:
 
         # Passphrase
         self.words = words
-        self.sep = sep
         self.minlength = minlength
         self.maxlength = maxlength
+        self.sep = sep
         self.casing = casing
         self.number = number
+
+
+S = Settings()
