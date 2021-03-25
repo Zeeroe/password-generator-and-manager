@@ -1,5 +1,5 @@
 import tkinter as tk
-from mainPanel import *
+from generatorPanel import *
 
 
 class Window:
@@ -8,11 +8,8 @@ class Window:
         self.root.title('1Pass')
         self.root.geometry('300x400')
 
-        self.mainframe = tk.Frame(self.root)
-        self.mainframe.grid()
-
-        self.mainPanel = mainPanel(self.mainframe)
-        self.mainPanel.generate_button.invoke()
+        self.generatorFrame = tk.Frame(self.root).grid()
+        self.generatorPanel = generatorPanel(self.generatorFrame)
 
     def start(self):
         self.root.mainloop()
