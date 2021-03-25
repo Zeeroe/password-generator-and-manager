@@ -1,6 +1,7 @@
 import tkinter as tk
 from random_word import RandomWords
 import random
+import re
 
 rw = RandomWords()
 
@@ -14,30 +15,27 @@ class ppPanel:
         self.words_label.grid(column=0, row=0)
         self.words_var = tk.IntVar(value=self.S.words)
         self.words_spinbox = tk.Spinbox(self.frame, from_=1, to=16, width=2, state='readonly',
-                                        textvariable=self.words_var,
-                                        command=self.words_f)
+                                        textvariable=self.words_var, command=self.words_f)
         self.words_spinbox.grid(column=1, row=0)
 
         self.minlength_label = tk.Label(self.frame, text='Min Length')
         self.minlength_label.grid(column=0, row=1)
         self.minlength_var = tk.IntVar(value=self.S.minlength)
         self.minlength_spinbox = tk.Spinbox(self.frame, from_=2, to=16, width=2, state='readonly',
-                                            textvariable=self.minlength_var,
-                                            command=self.minlength_f)
+                                            textvariable=self.minlength_var, command=self.minlength_f)
         self.minlength_spinbox.grid(column=1, row=1)
 
         self.maxlength_label = tk.Label(self.frame, text='Max Length')
         self.maxlength_label.grid(column=0, row=2)
         self.maxlength_var = tk.IntVar(value=self.S.maxlength)
         self.maxlength_spinbox = tk.Spinbox(self.frame, from_=2, to=16, width=2, state='readonly',
-                                            textvariable=self.maxlength_var,
-                                            command=self.maxlength_f)
+                                            textvariable=self.maxlength_var, command=self.maxlength_f)
         self.maxlength_spinbox.grid(column=1, row=2)
 
         self.casing_label = tk.Label(self.frame, text='Casing')
         self.casing_label.grid(column=0, row=4)
         self.casing_list = ['Lowercase', 'Uppercase', 'Titlecase']
-        self.casing_str = tk.StringVar(value='Lowercase')
+        self.casing_str = tk.StringVar(value=self.S.casing)
         self.casing_drop = tk.OptionMenu(self.frame, self.casing_str, *self.casing_list, command=self.casing_f)
         self.casing_drop.grid(column=1, row=4)
 
@@ -74,12 +72,7 @@ class ppPanel:
         self.minlength_spinbox.config(to=self.S.maxlength)
 
     def casing_f(self, c):
-        if c == 'Lowercase':
-            self.S.casing = 'lower'
-        elif c == 'Uppercase':
-            self.S.casing = 'upper'
-        elif c == 'Titlecase':
-            self.S.casing = 'title'
+        self.S.casing = c
         print(self.S.casing)
 
     def separator_f(self, v):
@@ -97,29 +90,36 @@ class ppPanel:
 
     def gen_phrase(self, text_entry):
         try:
-            sep = self.S.sep
-            list_ = rw.get_random_words(
-                limit=self.S.words,
-                minLength=self.S.minlength,
-                maxLength=self.S.maxlength)
+            S = self.S
+            list_ = rw.get_random_words(limit=S.words, minLength=S.minlength, maxLength=S.maxlength)
 
-            if self.S.number:
+            # For loop to check if each word in list_ is made of only letters
+            # For each word, if not, in a while loop, generate another word until it meets criteria
+            # Replace old word with new word
+            for word in list_:
+                x = word
+                while not re.search(re.compile('^[aA-zZ]+$'), x):
+                    print(x + ' -> ', end='')
+                    x = rw.get_random_word(minLength=S.minlength, maxLength=S.maxlength)
+                    print(x)
+                list_[list_.index(word)] = x
+
+            if S.number:
                 index_ = random.randint(0, len(list_) - 1)
                 number_ = str(random.randint(0, 9))
                 list_[index_] += number_
 
-            passphrase = sep.join(list_)
+            passphrase = S.sep.join(list_)
 
-            if self.S.casing == 'lower':
+            if S.casing == 'Lowercase':
                 passphrase = passphrase.lower()
-            elif self.S.casing == 'upper':
+            elif S.casing == 'Uppercase':
                 passphrase = passphrase.upper()
-            elif self.S.casing == 'title':
+            elif S.casing == 'Titlecase':
                 passphrase = passphrase.title()
 
             text_entry.delete(0, len(text_entry.get()))
             text_entry.insert(0, passphrase)
 
-        except TypeError:
-            print('TypeError')
+        except TypeError:  # When get_random_words doesn't return anything, because of rate limit
             self.gen_phrase(text_entry)
