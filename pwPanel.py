@@ -1,8 +1,5 @@
 import tkinter as tk
-import random_word
 import random
-
-rw = random_word.RandomWords()
 
 
 class Checkbox:
@@ -47,6 +44,9 @@ class pwPanel:
         self.num = Checkbox(self, 3, '0-9', '1')
         self.sym = Checkbox(self, 4, '!@#$%^&*', '!')
 
+    def length_f(self, v):
+        self.S.length = int(v)
+
     def last_box(self):
         if self.low.var.get() == 0 and \
            self.upp.var.get() == 0 and \
@@ -87,6 +87,3 @@ class pwPanel:
 
         te.delete(0, len(te.get()))
         te.insert(1, password)
-
-    def length_f(self, v):
-        self.S.length = int(v)
