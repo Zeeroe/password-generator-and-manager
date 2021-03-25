@@ -10,7 +10,7 @@ words = 3
 minlength = 4
 maxlength = 12
 sep = '-'
-casing = 'title'  # lower, upper, title
+casing = 'Lowercase'  # Lowercase, Uppercase, Titlecase
 number = True
 
 

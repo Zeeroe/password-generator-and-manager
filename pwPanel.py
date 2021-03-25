@@ -75,10 +75,10 @@ class pwPanel:
                             break
                     if not check:
                         password = password[1:-1] \
-                                   + random.choice(self.S.characters[key]) \
-                                   + password[0]
+                                 + random.choice(self.S.characters[key]) \
+                                 + password[0]
 
-            _ = random.sample(list(password), k=len(password))
+            _ = random.sample(list(password), k=len(password))  # Reshuffle password
             password = ''.join(_)
 
         except IndexError:
