@@ -1,0 +1,20 @@
+#Do not run this code continuously, there is only 1000 attempts for the API.
+import  requests
+import json
+# TODO: replace with your own app_id and app_key
+app_id = 'c423ffa9'
+app_key = '619c968e34e4c06d42aac3bdbe22c5e9'
+language = 'en-gb'
+word_id = 'Happy'
+url = 'https://od-api.oxforddictionaries.com/api/v2/entries/'  + language + '/'  + word_id.lower()
+r = requests.get(url, headers = {'app_id' : app_id, 'app_key' : app_key})
+
+api = json.loads(r.content)
+
+
+synonym_list = []
+for i in range(len(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'])):
+    synonym_list.append(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'][i]['text'])
+    
+print(synonym_list)
+    
