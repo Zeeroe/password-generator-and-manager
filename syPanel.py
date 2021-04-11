@@ -1,9 +1,12 @@
-import ppPanel
 import tkinter as tk
+from random_word import RandomWords
 import random
+import re
+
+rw = RandomWords()
 
 
-class syPanel():
+class syPanel:
     def __init__(self, frame, settings):
         self.frame = frame
         self.S = settings
