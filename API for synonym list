@@ -7,7 +7,7 @@ app_key = '619c968e34e4c06d42aac3bdbe22c5e9'
 language = 'en-gb'
 
 #Edit the word_id for the word we want to find for synonyms
-word_id = 'Happy'
+word_id = 'truth'
 url = 'https://od-api.oxforddictionaries.com/api/v2/entries/'  + language + '/'  + word_id.lower()
 r = requests.get(url, headers = {'app_id' : app_id, 'app_key' : app_key})
 
@@ -15,8 +15,12 @@ api = json.loads(r.content)
 
 
 synonym_list = []
-for i in range(len(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'])):
-    synonym_list.append(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'][i]['text'])
+try:
+    for i in range(len(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'])):
+        synonym_list.append(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'][i]['text'])
+except:
+    for i in range(len(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['synonyms'])):
+        synonym_list.append(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['synonyms'][i]['text'])
     
 print(synonym_list)
     
