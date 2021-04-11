@@ -7,7 +7,7 @@ from settings import S
 class generatorPanel:
     def __init__(self, root):
         self.frame = tk.Frame(root)
-        self.frame.grid()
+        self.frame.grid(column=0, row=1)
 
         self.text_entry = tk.Entry(self.frame, width=50, justify=tk.CENTER)
         self.text_entry.grid(column=0, row=0)
