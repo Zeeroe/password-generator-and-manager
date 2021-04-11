@@ -93,9 +93,6 @@ class ppPanel:
             S = self.S
             list_ = rw.get_random_words(limit=S.words, minLength=S.minlength, maxLength=S.maxlength)
 
-            # For loop to check if each word in list_ is made of only letters
-            # For each word, if not, in a while loop, generate another word until it meets criteria
-            # Replace old word with new word
             for word in list_:
                 x = word
                 while not re.search(re.compile('^[aA-zZ]+$'), x):
