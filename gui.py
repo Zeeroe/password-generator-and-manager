@@ -11,9 +11,9 @@ class Window:
         self.root.geometry('300x400')
         self.frame = tk.Frame(self.root).grid()
 
-        self.generatorPanel = generatorPanel(self.frame)
-
         self.managerPanel = managerPanel(self.frame)
+
+        self.generatorPanel = generatorPanel(self.frame, self.managerPanel)
 
         self.dockPanel = dockPanel(self.frame, self.generatorPanel, self.managerPanel)
 
