@@ -6,7 +6,8 @@ from settings import S
 
 
 class generatorPanel:
-    def __init__(self, root):
+    def __init__(self, root, mp):
+        self.mp = mp
         self.frame = tk.Frame(root)
         self.frame.grid(column=0, row=1)
 
@@ -19,11 +20,15 @@ class generatorPanel:
         self.settings_label = tk.Label(self.frame, text='Settings')
         self.settings_label.grid(column=0, row=2)
 
+        self.modeFrame = tk.Frame(self.frame)
+        self.modeFrame.grid(column=0, row=3)
+        self.minlength_label = tk.Label(self.modeFrame, text='Mode    ')
+        self.minlength_label.grid(column=0, row=0)
         self.mode_list = ['Password', 'Passphrase', 'Synonym']
         self.mode = 'Password'
-        self.mode_str = tk.StringVar(self.frame, value=self.mode)
-        self.mode_drop = tk.OptionMenu(self.frame, self.mode_str, *self.mode_list, command=self.switch_mode)
-        self.mode_drop.grid(column=0, row=3)
+        self.mode_str = tk.StringVar(self.modeFrame, value=self.mode)
+        self.mode_drop = tk.OptionMenu(self.modeFrame, self.mode_str, *self.mode_list, command=self.switch_mode)
+        self.mode_drop.grid(column=1, row=0)
 
         self.pwFrame = tk.Frame(self.frame)
         self.pwPanel = pwPanel(self.pwFrame, S)
@@ -35,24 +40,20 @@ class generatorPanel:
         self.syPanel = syPanel(self.syFrame, S)
 
         self.switch_mode(self.mode)
-        self.generate_button.invoke()
 
     def switch_mode(self, mode):
         if mode == 'Password':
             self.ppFrame.grid_forget()
             self.syFrame.grid_forget()
             self.pwFrame.grid(column=0, row=4)
-            self.pwPanel.gen_word(self.text_entry)
         elif mode == 'Passphrase':
             self.pwFrame.grid_forget()
             self.syFrame.grid_forget()
             self.ppFrame.grid(column=0, row=4)
-            self.ppPanel.gen_phrase(self.text_entry)
         elif mode == 'Synonym':
             self.pwFrame.grid_forget()
             self.ppFrame.grid_forget()
             self.syFrame.grid(column=0, row=4)
-            self.syPanel.gen_phrase(self.text_entry)
 
     def generate(self):
         if self.mode_str.get() == 'Password':
@@ -61,3 +62,4 @@ class generatorPanel:
             self.ppPanel.gen_phrase(self.text_entry)
         elif self.mode_str.get() == 'Synonym':
             self.syPanel.gen_phrase(self.text_entry)
+        self.mp.insert_listbox(self.text_entry.get())
