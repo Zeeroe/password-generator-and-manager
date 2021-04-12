@@ -1,5 +1,7 @@
 import tkinter as tk
+from dockPanel import *
 from generatorPanel import *
+from managerPanel import *
 
 
 class Window:
@@ -7,9 +9,13 @@ class Window:
         self.root = tk.Tk()
         self.root.title('1Pass')
         self.root.geometry('300x400')
+        self.frame = tk.Frame(self.root).grid()
 
-        self.generatorFrame = tk.Frame(self.root).grid()
-        self.generatorPanel = generatorPanel(self.generatorFrame)
+        self.managerPanel = managerPanel(self.frame)
+
+        self.generatorPanel = generatorPanel(self.frame, self.managerPanel)
+
+        self.dockPanel = dockPanel(self.frame, self.generatorPanel, self.managerPanel)
 
     def start(self):
         self.root.mainloop()
