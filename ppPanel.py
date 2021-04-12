@@ -1,7 +1,7 @@
-import tkinter as tk
-from random_word import RandomWords
 import random
 import re
+import tkinter as tk
+from random_word import RandomWords
 
 rw = RandomWords()
 
@@ -48,7 +48,8 @@ class ppPanel:
         self.sep_entry.grid(column=1, row=3)
         self.sep_entry.insert(0, self.S.sep)
 
-        self.number_label = tk.Label(self.frame, text='Number').grid(column=0, row=5)
+        self.number_label = tk.Label(self.frame, text='Number')
+        self.number_label.grid(column=0, row=5)
         self.number_var = tk.IntVar(self.frame)
         self.number_check = tk.Checkbutton(self.frame, variable=self.number_var, command=self.number_f)
         self.number_check.grid(column=1, row=5)
