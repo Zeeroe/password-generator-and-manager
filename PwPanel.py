@@ -1,5 +1,5 @@
-import tkinter as tk
 import random
+import tkinter as tk
 
 
 class Checkbox:
@@ -28,7 +28,7 @@ class Checkbox:
             self.S.characters[self.ch] = self.S.characters.pop(self.ch + '-')
 
 
-class pwPanel:
+class PwPanel:
     def __init__(self, frame, settings):
         self.frame = frame
         self.S = settings

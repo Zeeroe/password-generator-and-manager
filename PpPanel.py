@@ -6,7 +6,7 @@ from random_word import RandomWords
 rw = RandomWords()
 
 
-class ppPanel:
+class PpPanel:
     def __init__(self, frame, settings):
         self.frame = frame
         self.S = settings
@@ -35,8 +35,8 @@ class ppPanel:
         self.casing_label = tk.Label(self.frame, text='Casing')
         self.casing_label.grid(column=0, row=4)
         self.casing_list = ['Lowercase', 'Uppercase', 'Titlecase']
-        self.casing_str = tk.StringVar(value=self.S.casing)
-        self.casing_drop = tk.OptionMenu(self.frame, self.casing_str, *self.casing_list, command=self.casing_f)
+        self.casing_var = tk.StringVar(value=self.S.casing)
+        self.casing_drop = tk.OptionMenu(self.frame, self.casing_var, *self.casing_list, command=self.casing_f)
         self.casing_drop.grid(column=1, row=4)
 
         self.reg = self.frame.register(self.separator_f)
@@ -54,6 +54,14 @@ class ppPanel:
         self.number_check = tk.Checkbutton(self.frame, variable=self.number_var, command=self.number_f)
         self.number_check.grid(column=1, row=5)
         self.number_check.invoke()
+
+    def recheck_settings(self):
+        self.words_var.set(self.S.words)
+        temp = self.S.sep
+        self.sep_entry.delete(0, 1)
+        self.sep_entry.insert(0, temp)
+        self.casing_var.set(self.S.casing)
+        self.number_var.set(self.S.number)
 
     def words_f(self):
         self.S.words = int(self.words_var.get())
@@ -74,7 +82,6 @@ class ppPanel:
 
     def casing_f(self, c):
         self.S.casing = c
-        print(self.S.casing)
 
     def separator_f(self, v):
         if len(v) <= 1:
@@ -94,6 +101,9 @@ class ppPanel:
             S = self.S
             list_ = rw.get_random_words(limit=S.words, minLength=S.minlength, maxLength=S.maxlength)
 
+            # For loop to check if each word in list_ is made of only letters
+            # For each word, if not, in a while loop, generate another word until it meets criteria
+            # Replace old word with new word
             for word in list_:
                 x = word
                 while not re.search(re.compile('^[aA-zZ]+$'), x):
