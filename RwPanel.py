@@ -2,13 +2,14 @@ import json
 import random
 import re
 import requests
+import time
 import tkinter as tk
 from random_word import RandomWords
 
 rw = RandomWords()
 
 
-class SyPanel:
+class RwPanel:
     def __init__(self, frame, settings):
         self.frame = frame
         self.S = settings
@@ -16,7 +17,7 @@ class SyPanel:
         self.minlength_label = tk.Label(self.frame, text='Keyword')
         self.minlength_label.grid(column=0, row=0)
         self.keyword_entry = tk.Entry(self.frame, width=16, justify=tk.CENTER)
-        self.keyword_entry.insert(0, 'truth')
+        self.keyword_entry.insert(0, 'time')
         self.keyword_entry.grid(column=1, row=0)
 
         self.words_label = tk.Label(self.frame, text='Number of Words')
@@ -75,41 +76,36 @@ class SyPanel:
         elif self.number_var.get() == 1:
             self.S.number = True
 
-
     def gen_phrase(self, text_entry):
-        app_id = 'c423ffa9'
-        app_key = '619c968e34e4c06d42aac3bdbe22c5e9'
-        language = 'en-gb'
         word_id = self.keyword_entry.get()
+        relation_type = 'synonym'
+        word_limit = '500'
+        app_key = 'ue07dtenexug3v5duz1zs8ttiy63spay375xn1f32jirc8910'
 
-        url = 'https://od-api.oxforddictionaries.com/api/v2/entries/' + language + '/' + word_id.lower()
-        r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+        url = 'https://api.wordnik.com/v4/word.json/' + word_id + '/relatedWords?useCanonical=true&relationshipTypes=' \
+              + relation_type + '&limitPerRelationshipType=' + word_limit + ' &api_key=' + app_key
+        r = requests.get(url)
         data = json.loads(r.content)
 
-        synonyms_list = []
+        if 'message' in data:  # When Error message is in data
+            if data['message'] == 'Not found':
+                text_entry.delete(0, len(text_entry.get()))
+                text_entry.insert(0, 'No Synonyms Found')
+            elif data['message'] == 'API rate limit exceeded':
+                time.sleep(1)
+                print(data['message'])
+                self.gen_phrase(text_entry)
+        else:
+            synonyms_list = data[0]['words']
+            print(len(synonyms_list), synonyms_list)
 
-        if 'results' in data:
-            senses = data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
-            for sense in senses:
-                if 'subsenses' in sense:
-                    for subsense in sense['subsenses']:
-                        if 'synonyms' in subsense:
-                            for synonym in subsense['synonyms']:
-                                synonyms_list.append(synonym['text'])
-                if 'synonyms' in sense:
-                    for synonym in sense['synonyms']:
-                        synonyms_list.append(synonym['text'])
-
-        print(len(synonyms_list), synonyms_list)
-
-        if synonyms_list:
             S = self.S
             random.shuffle(synonyms_list)
             list_ = []
 
             for _ in range(S.words):
                 word = synonyms_list.pop()
-                while not re.search(re.compile('^[aA-zZ]+$'), word):
+                while not re.search(re.compile('^[aA-zZ]{3,}$'), word):  # Word must be 3+ characters and only letters
                     print(word + ' -> ', end='')
                     word = synonyms_list.pop()
                     print(word)
@@ -131,7 +127,3 @@ class SyPanel:
 
             text_entry.delete(0, len(text_entry.get()))
             text_entry.insert(0, passphrase)
-
-        else:
-            text_entry.delete(0, len(text_entry.get()))
-            text_entry.insert(0, 'No Synonyms Found')
