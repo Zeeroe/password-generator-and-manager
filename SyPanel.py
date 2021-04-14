@@ -3,13 +3,12 @@ import random
 import re
 import requests
 import tkinter as tk
-from ppPanel import ppPanel
 from random_word import RandomWords
 
 rw = RandomWords()
 
 
-class syPanel:
+class SyPanel:
     def __init__(self, frame, settings):
         self.frame = frame
         self.S = settings
@@ -30,15 +29,14 @@ class syPanel:
         self.casing_label = tk.Label(self.frame, text='Casing')
         self.casing_label.grid(column=0, row=3)
         self.casing_list = ['Lowercase', 'Uppercase', 'Titlecase']
-        self.casing_str = tk.StringVar(value=self.S.casing)
-        self.casing_drop = tk.OptionMenu(self.frame, self.casing_str, *self.casing_list, command=self.casing_f)
+        self.casing_var = tk.StringVar(value=self.S.casing)
+        self.casing_drop = tk.OptionMenu(self.frame, self.casing_var, *self.casing_list, command=self.casing_f)
         self.casing_drop.grid(column=1, row=3)
 
         self.reg = self.frame.register(self.separator_f)
 
         self.sep_label = tk.Label(self.frame, text='Separator')
         self.sep_label.grid(column=0, row=2)
-        self.sep_var = tk.StringVar(value=self.S.sep)
         self.sep_entry = tk.Entry(self.frame, width=2, validate="key", validatecommand=(self.reg, '%P'))
         self.sep_entry.grid(column=1, row=2)
         self.sep_entry.insert(0, self.S.sep)
@@ -50,12 +48,19 @@ class syPanel:
         self.number_check.grid(column=1, row=4)
         self.number_check.invoke()
 
+    def recheck_settings(self):
+        self.words_var.set(self.S.words)
+        temp = self.S.sep
+        self.sep_entry.delete(0, 1)
+        self.sep_entry.insert(0, temp)
+        self.casing_var.set(self.S.casing)
+        self.number_var.set(self.S.number)
+
     def words_f(self):
         self.S.words = int(self.words_var.get())
 
     def casing_f(self, c):
         self.S.casing = c
-        print(self.S.casing)
 
     def separator_f(self, v):
         if len(v) <= 1:
@@ -70,33 +75,45 @@ class syPanel:
         elif self.number_var.get() == 1:
             self.S.number = True
 
+
     def gen_phrase(self, text_entry):
-        try:
-            app_id = 'c423ffa9'
-            app_key = '619c968e34e4c06d42aac3bdbe22c5e9'
-            language = 'en-gb'
-            word_id = self.keyword_entry.get()
+        app_id = 'c423ffa9'
+        app_key = '619c968e34e4c06d42aac3bdbe22c5e9'
+        language = 'en-gb'
+        word_id = self.keyword_entry.get()
 
-            url = 'https://od-api.oxforddictionaries.com/api/v2/entries/' + language + '/' + word_id.lower()
-            r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+        url = 'https://od-api.oxforddictionaries.com/api/v2/entries/' + language + '/' + word_id.lower()
+        r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+        data = json.loads(r.content)
 
-            api = json.loads(r.content)
+        synonyms_list = []
 
-            synonym_list = []
-            try:
-                for i in range(len(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'])):
-                    synonym_list.append(
-                        api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'][i]['text'])
-            except:
-                for i in range(len(api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['synonyms'])):
-                    synonym_list.append(
-                        api['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['synonyms'][i]['text'])
-            print(synonym_list)
+        if 'results' in data:
+            senses = data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
+            for sense in senses:
+                if 'subsenses' in sense:
+                    for subsense in sense['subsenses']:
+                        if 'synonyms' in subsense:
+                            for synonym in subsense['synonyms']:
+                                synonyms_list.append(synonym['text'])
+                if 'synonyms' in sense:
+                    for synonym in sense['synonyms']:
+                        synonyms_list.append(synonym['text'])
 
+        print(len(synonyms_list), synonyms_list)
+
+        if synonyms_list:
             S = self.S
-            list_ = synonym_list
-            random.shuffle(list_)
-            list_ = list_[:S.words]
+            random.shuffle(synonyms_list)
+            list_ = []
+
+            for _ in range(S.words):
+                word = synonyms_list.pop()
+                while not re.search(re.compile('^[aA-zZ]+$'), word):
+                    print(word + ' -> ', end='')
+                    word = synonyms_list.pop()
+                    print(word)
+                list_.append(word)
 
             if S.number:
                 index_ = random.randint(0, len(list_) - 1)
@@ -114,6 +131,7 @@ class syPanel:
 
             text_entry.delete(0, len(text_entry.get()))
             text_entry.insert(0, passphrase)
-        except KeyError:
+
+        else:
             text_entry.delete(0, len(text_entry.get()))
             text_entry.insert(0, 'No Synonyms Found')

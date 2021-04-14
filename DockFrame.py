@@ -1,7 +1,7 @@
 import tkinter as tk
 
 
-class dockPanel:
+class DockFrame:
     def __init__(self, root, gf, mf):
         self.frame = tk.Frame(root)
         self.frame.grid(column=0, row=0)
