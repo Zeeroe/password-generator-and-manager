@@ -75,33 +75,45 @@ class SyPanel:
         elif self.number_var.get() == 1:
             self.S.number = True
 
+
     def gen_phrase(self, text_entry):
-        try:
-            app_id = 'c423ffa9'
-            app_key = '619c968e34e4c06d42aac3bdbe22c5e9'
-            language = 'en-gb'
-            word_id = self.keyword_entry.get()
+        app_id = 'c423ffa9'
+        app_key = '619c968e34e4c06d42aac3bdbe22c5e9'
+        language = 'en-gb'
+        word_id = self.keyword_entry.get()
 
-            url = 'https://od-api.oxforddictionaries.com/api/v2/entries/' + language + '/' + word_id.lower()
-            r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+        url = 'https://od-api.oxforddictionaries.com/api/v2/entries/' + language + '/' + word_id.lower()
+        r = requests.get(url, headers={'app_id': app_id, 'app_key': app_key})
+        data = json.loads(r.content)
 
-            data = json.loads(r.content)
+        synonyms_list = []
 
-            synonym_list = []
-            try:
-                for i in range(len(data['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'])):
-                    synonym_list.append(
-                        data['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][1]['synonyms'][i]['text'])
-            except:
-                for i in range(len(data['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['synonyms'])):
-                    synonym_list.append(
-                        data['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['synonyms'][i]['text'])
-            print(synonym_list)
+        if 'results' in data:
+            senses = data['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
+            for sense in senses:
+                if 'subsenses' in sense:
+                    for subsense in sense['subsenses']:
+                        if 'synonyms' in subsense:
+                            for synonym in subsense['synonyms']:
+                                synonyms_list.append(synonym['text'])
+                if 'synonyms' in sense:
+                    for synonym in sense['synonyms']:
+                        synonyms_list.append(synonym['text'])
 
+        print(len(synonyms_list), synonyms_list)
+
+        if synonyms_list:
             S = self.S
-            list_ = synonym_list
-            random.shuffle(list_)
-            list_ = list_[:S.words]
+            random.shuffle(synonyms_list)
+            list_ = []
+
+            for _ in range(S.words):
+                word = synonyms_list.pop()
+                while not re.search(re.compile('^[aA-zZ]+$'), word):
+                    print(word + ' -> ', end='')
+                    word = synonyms_list.pop()
+                    print(word)
+                list_.append(word)
 
             if S.number:
                 index_ = random.randint(0, len(list_) - 1)
@@ -119,6 +131,7 @@ class SyPanel:
 
             text_entry.delete(0, len(text_entry.get()))
             text_entry.insert(0, passphrase)
-        except KeyError:
+
+        else:
             text_entry.delete(0, len(text_entry.get()))
             text_entry.insert(0, 'No Synonyms Found')
