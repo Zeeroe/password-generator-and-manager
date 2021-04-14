@@ -28,7 +28,7 @@ class GeneratorFrame:
         self.modeFrame.grid(column=0, row=3)
         self.mode_label = tk.Label(self.modeFrame, text='Mode    ')
         self.mode_label.grid(column=0, row=0)
-        self.mode_list = ['Password', 'Passphrase', 'Synonym']
+        self.mode_list = ['Password', 'Passphrase', 'Related words']
         self.mode = 'Password'
         self.mode_str = tk.StringVar(self.modeFrame, value=self.mode)
         self.mode_drop = tk.OptionMenu(self.modeFrame, self.mode_str, *self.mode_list, command=self.switch_mode)
@@ -66,7 +66,7 @@ class GeneratorFrame:
             self.RwFrame.grid_forget()
             self.PpFrame.grid(column=0, row=4)
             self.PpPanel.recheck_settings()
-        elif mode == 'Synonym':
+        elif mode == 'Related words':
             self.PwFrame.grid_forget()
             self.PpFrame.grid_forget()
             self.RwFrame.grid(column=0, row=4)
@@ -77,6 +77,6 @@ class GeneratorFrame:
             self.PwPanel.gen_word(self.text_entry)
         elif self.mode_str.get() == 'Passphrase':
             self.PpPanel.gen_phrase(self.text_entry)
-        elif self.mode_str.get() == 'Synonym':
+        elif self.mode_str.get() == 'Related words':
             self.RwPanel.gen_phrase(self.text_entry)
         self.insert_listbox(self.text_entry.get())
