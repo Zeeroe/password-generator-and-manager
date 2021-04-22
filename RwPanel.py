@@ -9,7 +9,7 @@ from random_word import RandomWords
 rw = RandomWords()
 
 
-class SyPanel:
+class RwPanel:
     def __init__(self, frame, settings):
         self.frame = frame
         self.S = settings
@@ -17,7 +17,7 @@ class SyPanel:
         self.minlength_label = tk.Label(self.frame, text='Keyword')
         self.minlength_label.grid(column=0, row=0)
         self.keyword_entry = tk.Entry(self.frame, width=16, justify=tk.CENTER)
-        self.keyword_entry.insert(0, 'truth')
+        self.keyword_entry.insert(0, 'time')
         self.keyword_entry.grid(column=1, row=0)
 
         self.words_label = tk.Label(self.frame, text='Number of Words')
