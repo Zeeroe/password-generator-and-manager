@@ -10,8 +10,9 @@ words = 3
 minlength = 4
 maxlength = 12
 sep = '-'
-casing = 'Lowercase'  # Lowercase, Uppercase, Titlecase
+casing = 'Titlecase'  # Lowercase, Uppercase, Titlecase
 number = True
+keyword = 'time'
 
 
 class Settings:
@@ -29,6 +30,7 @@ class Settings:
         self.sep = sep
         self.casing = casing
         self.number = number
+        self.keyword = keyword
 
 
 S = Settings()
