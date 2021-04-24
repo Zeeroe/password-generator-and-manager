@@ -2,12 +2,12 @@ import json
 import random
 import re
 import requests
-import time
 import tkinter as tk
 from random_word import RandomWords
 
 rw = RandomWords()
 
+api_key = 'ue07dtenexug3v5duz1zs8ttiy63spay375xn1f32jirc8910'
 
 class RwPanel:
     def __init__(self, frame, settings):
@@ -17,7 +17,7 @@ class RwPanel:
         self.minlength_label = tk.Label(self.frame, text='Keyword')
         self.minlength_label.grid(column=0, row=0)
         self.keyword_entry = tk.Entry(self.frame, width=16, justify=tk.CENTER)
-        self.keyword_entry.insert(0, 'time')
+        self.keyword_entry.insert(0, self.S.keyword)
         self.keyword_entry.grid(column=1, row=0)
 
         self.words_label = tk.Label(self.frame, text='Number of Words')
@@ -76,25 +76,26 @@ class RwPanel:
         elif self.number_var.get() == 1:
             self.S.number = True
 
-    def gen_phrase(self, text_entry):
-        word_id = self.keyword_entry.get()
-        relation_type = 'synonym'
-        word_limit = '500'
-        app_key = 'ue07dtenexug3v5duz1zs8ttiy63spay375xn1f32jirc8910'
-
+    def get_related_words(self, word_id, relation_type, word_limit):
         url = 'https://api.wordnik.com/v4/word.json/' + word_id + '/relatedWords?useCanonical=true&relationshipTypes=' \
-              + relation_type + '&limitPerRelationshipType=' + word_limit + ' &api_key=' + app_key
+              + relation_type + '&limitPerRelationshipType=' + word_limit + ' &api_key=' + api_key
         r = requests.get(url)
         data = json.loads(r.content)
+        return data
+
+    def update_text_entry(self, text_entry, text):
+        text_entry.delete(0, len(text_entry.get()))
+        text_entry.insert(0, text)
+
+    def gen_phrase(self, text_entry):
+        word_id = self.keyword_entry.get()
+        data = self.get_related_words(word_id, 'synonym', '1000')
 
         if 'message' in data:  # When Error message is in data
             if data['message'] == 'Not found':
-                text_entry.delete(0, len(text_entry.get()))
-                text_entry.insert(0, 'No Synonyms Found')
+                self.update_text_entry(text_entry, 'No Synonyms Found')
             elif data['message'] == 'API rate limit exceeded':
-                time.sleep(1)
-                print(data['message'])
-                self.gen_phrase(text_entry)
+                self.update_text_entry(text_entry, 'API rate limit exceeded')
         else:
             synonyms_list = data[0]['words']
             print(len(synonyms_list), synonyms_list)
@@ -104,12 +105,13 @@ class RwPanel:
             list_ = []
 
             for _ in range(S.words):
-                word = synonyms_list.pop()
-                while not re.search(re.compile('^[aA-zZ]{3,}$'), word):  # Word must be 3+ characters and only letters
-                    print(word + ' -> ', end='')
-                    word = synonyms_list.pop()
-                    print(word)
-                list_.append(word)
+                try:
+                    word = ''
+                    while not re.search(re.compile('^[aA-zZ]{3,}$'), word):  # Word must be 3+ characters and only letters
+                        word = synonyms_list.pop()
+                    list_.append(word)
+                except IndexError:
+                    pass
 
             if S.number:
                 index_ = random.randint(0, len(list_) - 1)
