@@ -3,12 +3,16 @@ import csv
 
 
 class LoginObj:
-    def __init__(self, login_list, root, row, site, user, pw):
-        self.frame = tk.Frame(login_list, bd=1, relief=tk.RIDGE)
+    def __init__(self, mger, row, website, user, pw):
+        self.frame = tk.Frame(mger.logins_frame, bd=1, relief=tk.RIDGE)
         self.frame.grid(column=0, row=row)
-        self.root = root
 
-        self.site = site
+        self.logins_frame = mger.logins_frame
+        self.canvas = mger.canvas
+        self.root = mger.root
+        self.list_logins = mger.list_logins
+
+        self.website = website
         self.user = user
         self.pw = pw
 
@@ -17,8 +21,8 @@ class LoginObj:
         self.entry_frame = tk.Frame(self.frame)
         self.entry_frame.grid(column=0, row=0)
 
-        self.site_entry = tk.Entry(self.entry_frame, width=33)
-        self.site_entry.insert(0, self.site)
+        self.site_entry = tk.Entry(self.entry_frame, width=33, justify=tk.CENTER)
+        self.site_entry.insert(0, self.website)
         self.site_entry.grid(column=0, row=0)
 
         self.user_entry = tk.Entry(self.entry_frame, width=33)
@@ -43,15 +47,27 @@ class LoginObj:
         self.delete_button.grid(column=3, row=0, sticky='n')
 
     def edit(self):
+        h = self.logins_frame.winfo_height()
         if not self.edit_mode:
             for field in self.list_fields:
                 field.configure(state=tk.NORMAL)
-            self.pw_entry.grid(column=0, row=2)
+            self.pw_entry.grid()
+            self.logins_frame.configure(height=(h+20))
+            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
             self.edit_mode = True
         else:
+            new = []  # temp list to store (possibly updated) website, user, password from fields
             for field in self.list_fields:
                 field.configure(state=tk.DISABLED)
+                new.append(field.get())
+            index = self.list_logins.index([self.website, self.user, self.pw])
+            self.list_logins[index] = new  # update login information
+            [self.website, self.user, self.pw] = new
+            self.update_file()
+            
             self.pw_entry.grid_forget()
+            self.logins_frame.configure(height=(h-20))
+            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
             self.edit_mode = False
 
     def copy(self):
@@ -60,14 +76,13 @@ class LoginObj:
 
     def delete(self):
         self.frame.grid_forget()
-        logins_file = open('logins.txt', 'r')
-        list_logins = list(csv.reader(logins_file, delimiter=','))
-        list_logins.remove([self.site, self.user, self.pw])
-        logins_file.close()
+        self.list_logins.remove([self.website, self.user, self.pw])
+        self.update_file()
 
+    def update_file(self):
         logins_file = open('logins.txt', 'w', newline='')
-        x = csv.writer(logins_file, delimiter=',')
-        x.writerows(list_logins)
+        writer = csv.writer(logins_file, delimiter=',')
+        writer.writerows(self.list_logins)
         logins_file.close()
 
 
@@ -101,6 +116,8 @@ class ManagerFrame:
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.canvas.create_window((0, 0), window=self.logins_frame, anchor='nw')
 
+        self.logins_file = open('logins.txt', 'r')
+        self.list_logins = list(csv.reader(self.logins_file, delimiter=','))
         self.import_logins()
 
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -112,13 +129,11 @@ class ManagerFrame:
         self.canvas.yview_scroll(-1 * int((event.delta / 120)), "units")
 
     def import_logins(self):
-        logins_file = open('logins.txt', 'r')
-        list_logins = list(csv.reader(logins_file, delimiter=','))
         h = 0
         row = 0
-        for login in list_logins:
-            self.list_logins_obj.append(LoginObj(self.logins_frame, self.root, row, login[0], login[1], login[2]))
+        for login in self.list_logins:
+            self.list_logins_obj.append(LoginObj(self, row, login[0], login[1], login[2]))
             row += 1
-            h += 44
+            h += 40
             self.logins_frame.configure(height=h)
-        logins_file.close()
+        self.logins_file.close()
