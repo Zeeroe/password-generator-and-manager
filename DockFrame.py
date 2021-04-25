@@ -2,8 +2,8 @@ import tkinter as tk
 
 
 class DockFrame:
-    def __init__(self, root, gf, mf):
-        self.frame = tk.Frame(root)
+    def __init__(self, frame, gf, mf):
+        self.frame = tk.Frame(frame)
         self.frame.grid(column=0, row=0)
 
         self.gf = gf
