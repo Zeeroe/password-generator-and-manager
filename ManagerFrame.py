@@ -64,7 +64,7 @@ class LoginObj:
             self.list_logins[index] = new  # update login information
             [self.website, self.user, self.pw] = new
             self.update_file()
-            
+
             self.pw_entry.grid_forget()
             self.logins_frame.configure(height=(h-20))
             self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -78,6 +78,9 @@ class LoginObj:
         self.frame.grid_forget()
         self.list_logins.remove([self.website, self.user, self.pw])
         self.update_file()
+        h = self.logins_frame.winfo_height()
+        self.logins_frame.configure(height=(h - 40))
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def update_file(self):
         logins_file = open('logins.txt', 'w', newline='')
@@ -123,7 +126,13 @@ class ManagerFrame:
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def add_login(self):
-        pass
+        row = len(self.list_logins_obj) + 1
+        self.list_logins_obj.append(LoginObj(self, row, '', '', ''))
+        self.list_logins.append(['', '', ''])
+        h = self.logins_frame.winfo_height()
+        self.logins_frame.configure(height=(h + 40))
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        self.canvas.yview_moveto(1)
 
     def _on_mouse_wheel(self, event):
         self.canvas.yview_scroll(-1 * int((event.delta / 120)), "units")
