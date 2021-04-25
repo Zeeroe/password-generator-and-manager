@@ -6,8 +6,8 @@ from settings import S
 
 
 class GeneratorFrame:
-    def __init__(self, root):
-        self.frame = tk.Frame(root)
+    def __init__(self, frame):
+        self.frame = tk.Frame(frame)
         self.frame.grid(column=0, row=1)
 
         self.topFrame = tk.Frame(self.frame)
