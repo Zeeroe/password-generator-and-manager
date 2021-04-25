@@ -11,7 +11,7 @@ class Window:
         self.root.geometry('300x400')
         self.frame = tk.Frame(self.root).grid()
 
-        self.ManagerFrame = ManagerFrame(self.frame)
+        self.ManagerFrame = ManagerFrame(self.frame, self.root)
 
         self.GeneratorFrame = GeneratorFrame(self.frame)
 
