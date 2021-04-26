@@ -6,20 +6,19 @@ from settings import S
 
 
 class GeneratorFrame:
-    def __init__(self, frame):
-        self.frame = tk.Frame(frame)
-        self.frame.grid(column=0, row=1)
+    def __init__(self, parent):
+        self.frame = tk.Frame(parent)
 
         self.topFrame = tk.Frame(self.frame)
         self.topFrame.grid(column=0, row=0)
 
-        self.text_entry = tk.Entry(self.topFrame, width=45, justify=tk.CENTER)
+        self.text_entry = tk.Entry(self.topFrame, width=40, justify=tk.CENTER)
         self.text_entry.grid(column=0, row=0)
 
         self.history_button = tk.Button(self.topFrame, text='H', width=2, command=self.history)
         self.history_button.grid(column=1, row=0, sticky='NE')
 
-        self.history_listbox = tk.Listbox(self.topFrame, height=22, width=45)
+        self.history_listbox = tk.Listbox(self.topFrame, height=22, width=40)
 
         self.generate_button = tk.Button(self.frame, text="Regenerate Password", command=self.generate)
         self.generate_button.grid(column=0, row=1)
