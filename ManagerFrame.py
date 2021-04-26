@@ -7,15 +7,15 @@ bufferSize = 64 * 1024
 
 
 class LoginObj:
-    def __init__(self, mger, row, website, user, pw):
-        self.frame = tk.Frame(mger.logins_frame, bd=1, relief=tk.RIDGE)
+    def __init__(self, mf, row, website, user, pw):
+        self.frame = tk.Frame(mf.logins_frame, bd=1, relief=tk.RIDGE)
         self.frame.grid(column=0, row=row)
 
-        self.mger = mger
-        self.logins_frame = mger.logins_frame
-        self.canvas = mger.canvas
-        self.root = mger.root
-        self.data_logins = mger.data_logins
+        self.mf = mf
+        self.logins_frame = mf.logins_frame
+        self.canvas = mf.canvas
+        self.root = mf.root
+        self.data_logins = mf.data_logins
 
         self.website = website
         self.user = user
@@ -75,7 +75,7 @@ class LoginObj:
                 index = self.data_logins['logins'].index([self.website, self.user, self.pw])
                 self.data_logins['logins'][index] = new  # update login information
                 [self.website, self.user, self.pw] = new
-                self.mger.encrypt()
+                self.mf.encrypt()
 
     def copy(self):
         self.root.clipboard_clear()
@@ -88,13 +88,13 @@ class LoginObj:
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
         self.data_logins['logins'].remove([self.website, self.user, self.pw])
-        self.mger.encrypt()
+        self.mf.encrypt()
 
 
 class LockFrame:
-    def __init__(self, mger):
-        self.mger = mger
-        self.frame = tk.Frame(mger.frame)
+    def __init__(self, mf):
+        self.mf = mf
+        self.frame = tk.Frame(mf.frame)
 
         self.prompt_label = tk.Label(self.frame, text='Enter Keycode')
         self.prompt_label.grid(column=0, row=0)
@@ -108,17 +108,17 @@ class LockFrame:
     def unlock_f(self):
         keycode = self.keycode_entry.get()
         if len(keycode) >= 1:
-            self.mger.decrypt(keycode)
-            if len(self.mger.data_logins) != 0 and self.mger.data_logins['key'] == keycode:
-                self.mger.import_logins()
+            self.mf.decrypt(keycode)
+            if len(self.mf.data_logins) != 0 and self.mf.data_logins['key'] == keycode:
+                self.mf.import_logins()
                 self.frame.grid_forget()
-                self.mger.manager_frame.grid()
+                self.mf.manager_frame.grid()
 
 
 class SetFrame:
-    def __init__(self, mger):
-        self.mger = mger
-        self.frame = tk.Frame(mger.frame)
+    def __init__(self, mf):
+        self.mf = mf
+        self.frame = tk.Frame(mf.frame)
 
         self.prompt_label = tk.Label(self.frame, text='Enter Keycode')
         self.prompt_label.grid(column=0, row=0)
@@ -126,16 +126,17 @@ class SetFrame:
         self.keycode_entry = tk.Entry(self.frame, width=40)
         self.keycode_entry.grid(column=0, row=1)
 
-        self.set_key_button = tk.Button(self.frame, text='Set Keycode', command=self.set_key_f)
+        self.set_key_button = tk.Button(self.frame, text='Set New Keycode', command=self.set_key_f)
         self.set_key_button.grid(column=0, row=2)
 
     def set_key_f(self):
         keycode = self.keycode_entry.get()
         if len(keycode) >= 1:
-            self.mger.set_frame.frame.grid_forget()
-            self.mger.manager_frame.grid()
+            self.mf.set_frame.frame.grid_forget()
+            self.mf.manager_frame.grid()
 
-            self.mger.data_logins['key'] = keycode
+            self.mf.data_logins['key'] = keycode
+            self.mf.encrypt()
 
 
 def is_first_time():
@@ -160,7 +161,7 @@ class ManagerFrame:
         self.top_frame = tk.Frame(self.manager_frame)
         self.top_frame.grid(row=0, sticky='w')
         self.mid_frame = tk.Frame(self.manager_frame)
-        self.mid_frame.grid(row=1, sticky='w')
+        #self.mid_frame.grid(row=1, sticky='w')
         self.bottom_frame = tk.Frame(self.manager_frame)
         self.bottom_frame.grid(row=2)
 
@@ -175,7 +176,7 @@ class ManagerFrame:
         self.search_entry = tk.Entry(self.mid_frame, width=40)
         self.search_entry.grid(column=1, row=0)
 
-        self.canvas = tk.Canvas(self.bottom_frame, width=275, height=310, relief=tk.FLAT)
+        self.canvas = tk.Canvas(self.bottom_frame, width=275, height=330, relief=tk.FLAT)
         self.canvas.grid(column=0, row=0)
         self.canvas.bind_all("<MouseWheel>", self._on_mouse_wheel)
 
@@ -223,8 +224,8 @@ class ManagerFrame:
             pyAesCrypt.decryptFile("logins.json.aes", "logins.json", key, bufferSize)
             file = open('logins.json', 'r+')
             read = file.read()
-            file.truncate(0)
             file.close()
+            os.remove("logins.json")
 
             logins_new = json.loads(read)
             self.data_logins = logins_new
@@ -239,6 +240,4 @@ class ManagerFrame:
 
         pyAesCrypt.encryptFile("logins.json", "logins.json.aes", self.data_logins['key'], bufferSize)
 
-        file = open('logins.json', "w")
-        file.truncate(0)
-        file.close()
+        os.remove("logins.json")
