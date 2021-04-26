@@ -4,4 +4,4 @@ Password Generator and Manager
 1. Random-Word
 2. PyYAML
 3. requests
-4. cryptography
+4. pyAesCrypt
