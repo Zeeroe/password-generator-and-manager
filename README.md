@@ -5,3 +5,5 @@ Password Generator and Manager
 2. PyYAML
 3. requests
 4. pyAesCrypt
+# How to use
+1. run main.py
