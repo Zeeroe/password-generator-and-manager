@@ -220,8 +220,8 @@ class ManagerFrame:
 
     def decrypt(self, key):
         try:
-            pyAesCrypt.decryptFile("logins2.json.aes", "logins2.json", key, bufferSize)
-            file = open('logins2.json', 'r+')
+            pyAesCrypt.decryptFile("logins.json.aes", "logins.json", key, bufferSize)
+            file = open('logins.json', 'r+')
             read = file.read()
             file.truncate(0)
             file.close()
@@ -233,12 +233,12 @@ class ManagerFrame:
             print('Wrong password (or file is corrupted)')
 
     def encrypt(self):
-        file = open('logins2.json', "w")
+        file = open('logins.json', "w")
         json.dump(self.data_logins, file, indent=4)
         file.close()
 
-        pyAesCrypt.encryptFile("logins2.json", "logins2.json.aes", self.data_logins['key'], bufferSize)
+        pyAesCrypt.encryptFile("logins.json", "logins.json.aes", self.data_logins['key'], bufferSize)
 
-        file = open('logins2.json', "w")
+        file = open('logins.json', "w")
         file.truncate(0)
         file.close()
