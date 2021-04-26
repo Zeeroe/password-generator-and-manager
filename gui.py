@@ -12,10 +12,10 @@ class Window:
         self.frame = tk.Frame(self.root).grid()
 
         self.ManagerFrame = ManagerFrame(self.frame, self.root)
-
         self.GeneratorFrame = GeneratorFrame(self.frame)
-
         self.DockFrame = DockFrame(self.frame, self.GeneratorFrame, self.ManagerFrame)
 
     def start(self):
+        self.DockFrame.frame.grid(column=0, row=0)
+        self.GeneratorFrame.frame.grid(column=0, row=1)
         self.root.mainloop()
