@@ -7,7 +7,12 @@ from random_word import RandomWords
 
 rw = RandomWords()
 
-api_key = 'ue07dtenexug3v5duz1zs8ttiy63spay375xn1f32jirc8910'
+api_key = [
+    "ue07dtenexug3v5duz1zs8ttiy63spay375xn1f32jirc8910",
+    "d1468251dcc15bd72245101c1fc07fae5c3747257092d3230",
+    "1eirq2gnxpe0x2crebxeo1pdnc3mdk6fpw7io56j6nw02zyj7",
+    "c23b746d074135dc9500c0a61300a3cb7647e53ec2b9b658e"
+]
 
 class RwPanel:
     def __init__(self, frame, settings):
@@ -78,7 +83,7 @@ class RwPanel:
 
     def get_related_words(self, word_id, relation_type, word_limit):
         url = 'https://api.wordnik.com/v4/word.json/' + word_id + '/relatedWords?useCanonical=true&relationshipTypes=' \
-              + relation_type + '&limitPerRelationshipType=' + word_limit + ' &api_key=' + api_key
+              + relation_type + '&limitPerRelationshipType=' + word_limit + ' &api_key=' + api_key[0]
         r = requests.get(url)
         data = json.loads(r.content)
         return data
@@ -93,7 +98,7 @@ class RwPanel:
 
         if 'message' in data:  # When Error message is in data
             if data['message'] == 'Not found':
-                self.update_text_entry(text_entry, 'No Synonyms Found')
+                self.update_text_entry(text_entry, 'No Related Words Found')
             elif data['message'] == 'API rate limit exceeded':
                 self.update_text_entry(text_entry, 'API rate limit exceeded')
         else:
