@@ -42,13 +42,13 @@ class LoginObj:
         for field in self.list_fields:
             field.configure(state=tk.DISABLED)
 
-        self.edit_button = tk.Button(self.frame, text='E', width=2, command=self.edit)
+        self.edit_button = tk.Button(self.frame, image=self.mf.images['edit'], height=20, width=20, command=self.edit)
         self.edit_button.grid(column=1, row=0, sticky='n')
 
-        self.copy_button = tk.Button(self.frame, text='C', width=2, command=self.copy)
+        self.copy_button = tk.Button(self.frame, image=self.mf.images['copy'], height=20, width=20, command=self.copy)
         self.copy_button.grid(column=2, row=0, sticky='n')
 
-        self.delete_button = tk.Button(self.frame, text='D', width=2, command=self.delete)
+        self.delete_button = tk.Button(self.frame, image=self.mf.images['delete'], height=20, width=20, command=self.delete)
         self.delete_button.grid(column=3, row=0, sticky='n')
 
     def edit(self):
@@ -145,9 +145,10 @@ def is_first_time():
 
 
 class ManagerFrame:
-    def __init__(self, parent, root):
+    def __init__(self, parent, root, images):
         self.frame = tk.Frame(parent)
         self.root = root
+        self.images = images
 
         self.data_logins = {"key": "", "logins": []}
 
@@ -161,7 +162,7 @@ class ManagerFrame:
         self.top_frame = tk.Frame(self.manager_frame)
         self.top_frame.grid(row=0, sticky='w')
         self.mid_frame = tk.Frame(self.manager_frame)
-        #self.mid_frame.grid(row=1, sticky='w')
+        self.mid_frame.grid(row=1, sticky='w')
         self.bottom_frame = tk.Frame(self.manager_frame)
         self.bottom_frame.grid(row=2)
 

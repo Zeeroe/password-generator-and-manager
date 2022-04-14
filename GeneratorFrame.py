@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from PwPanel import *
 from PpPanel import *
@@ -6,8 +7,9 @@ from settings import S
 
 
 class GeneratorFrame:
-    def __init__(self, parent):
+    def __init__(self, parent, images):
         self.frame = tk.Frame(parent)
+        self.images = images
 
         self.topFrame = tk.Frame(self.frame)
         self.topFrame.grid(column=0, row=0)
@@ -15,10 +17,9 @@ class GeneratorFrame:
         self.text_entry = tk.Entry(self.topFrame, width=40, justify=tk.CENTER)
         self.text_entry.grid(column=0, row=0)
 
-        self.history_button = tk.Button(self.topFrame, text='H', width=2, command=self.history)
-        self.history_button.grid(column=1, row=0, sticky='NE')
-
         self.history_listbox = tk.Listbox(self.topFrame, height=22, width=40)
+        self.history_button = tk.Button(self.topFrame, image=self.images['history'], height=20, width=20, command=self.history)
+        self.history_button.grid(column=1, row=0, sticky='NE')
 
         self.generate_button = tk.Button(self.frame, text="Regenerate Password", command=self.generate)
         self.generate_button.grid(column=0, row=1)
@@ -52,7 +53,7 @@ class GeneratorFrame:
             self.history_listbox.grid_forget()
             self.text_entry.grid(column=0, row=0)
 
-    def insert_listbox(self, new):
+    def insert_history(self, new):
         self.history_listbox.insert(0, new)
 
     def switch_mode(self, mode):
@@ -72,10 +73,7 @@ class GeneratorFrame:
             self.RwPanel.recheck_settings()
 
     def generate(self):
-        if self.mode_str.get() == 'Password':
-            self.PwPanel.gen_word(self.text_entry)
-        elif self.mode_str.get() == 'Passphrase':
-            self.PpPanel.gen_phrase(self.text_entry)
-        elif self.mode_str.get() == 'Related words':
-            self.RwPanel.gen_phrase(self.text_entry)
-        self.insert_listbox(self.text_entry.get())
+        if   self.mode_str.get() == 'Password':      self.PwPanel.gen_word(self.text_entry)
+        elif self.mode_str.get() == 'Passphrase':    self.PpPanel.gen_phrase(self.text_entry)
+        elif self.mode_str.get() == 'Related words': self.RwPanel.gen_phrase(self.text_entry)
+        self.insert_history(self.text_entry.get())
